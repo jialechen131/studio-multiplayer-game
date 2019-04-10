@@ -7,7 +7,9 @@ import TwentyOneQuestions from './games/twentyOneQuestions/TwentyOneQuestions.js
 import Spark from './games/spark/Spark.js';
 import uno from './games/uno/uno.js';
 import Mafia from './games/mafia/Mafia.js';
-import Pokemon from './games/pokemon/Pokemon.js'
+import Pokemon from './games/pokemon/Pokemon.js';
+import FFW from './games/FFW/FFW.js';
+
 
 const gameData = {
 
@@ -100,6 +102,15 @@ const gameData = {
     maxUsers: 20,
     component: Mafia,
   },
+  
+  frostFireWater: {
+    title: "Frost Fire Watter",
+    authors: "Daniel Zamilatskiy, Gary Chen",
+    description: "",
+    minUsers: 2,
+    maxUsers: 2,
+    component: FFW,
+  }
 }
 
 export default gameData;
