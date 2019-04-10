@@ -5,6 +5,16 @@ import UserApi from "../../UserApi.js";
 // import Boostrap from 'react-bootstrap/Button';
 
 export default class FFW extends GameComponent {
+  constructor(props) {
+    super(props);
+    this.getSessionDatabaseRef().set({ text: "Hello, World!" });
+    this.state = {};
+  }
+
+  onSessionMetadataChanged(data) {
+    console.log("Data changed!", data);
+  }
+
   render() {
     var id = this.getSessionId();
     var creatorId = this.getSessionCreatorUserId();
