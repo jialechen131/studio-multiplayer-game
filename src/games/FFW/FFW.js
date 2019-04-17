@@ -7,7 +7,7 @@ import UserApi from "../../UserApi.js";
 export default class FFW extends GameComponent {
   constructor(props) {
     super(props);
-    this.getSessionDatabaseRef().set({ selection: null });
+    this.getSessionDatabaseRef().set({ [this.getMyUserId()]: null });
     this.state = {
         selection: null
     };
@@ -19,7 +19,7 @@ export default class FFW extends GameComponent {
 	setSelection(selection){
 		this.setState({selection: selection});
 		let key = this.getMyUserId();
-		this.getSessionDatabaseRef().set({ [key]: selection });
+		this.getSessionDatabaseRef().update({ [key]: selection });
 	}
 
 
