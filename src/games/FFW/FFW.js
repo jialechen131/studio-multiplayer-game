@@ -7,29 +7,36 @@ import UserApi from "../../UserApi.js";
 export default class FFW extends GameComponent {
   constructor(props) {
     super(props);
-    this.getSessionDatabaseRef().set({ text: "Hello, World!" });
-    this.state = {};
+    this.getSessionDatabaseRef().set({ selection: null });
+    this.state = {
+        selection: null
+    };
   }
-
-  onSessionMetadataChanged(data) {
+  onSessionDataChanged(data) {
     console.log("Data changed!", data);
   }
+
+	setSelection(selection){
+		this.setState({selection: selection});
+		let key = this.getMyUserId();
+		this.getSessionDatabaseRef().set({ [key]: selection });
+	}
+
 
   render() {
     var id = this.getSessionId();
     var creatorId = this.getSessionCreatorUserId();
-    var users = this.getSessionUserIds().map(user_id => (
-      <li key={user_id}>{UserApi.getName(user_id)}</li>
-    ));
+    // var users = this.getSessionUserIds().map(user_id => (
+    //   <li key={user_id}>{UserApi.getName(user_id)}</li>
+    // ));
     var creator = UserApi.getName(creatorId);
     var isHost = this.getMyUserId() === creatorId;
     return (
       <div>
-        <h3>Hello, {isHost ? `Host` : `Guest`}</h3>
-        <p>Session ID: {id}</p>
-        <p>Session creator: {creator}</p>
-        <p>Session users:</p>
-        <ul> {users} </ul>
+        <button onClick={()=>this.setSelection("Frost")}>Frost</button>
+        <button onClick={()=>this.setSelection("Fire")}>Fire</button>
+        <button onClick={()=>this.setSelection("Water")}>Water</button>
+				<p>You picked {this.state.selection}</p>
       </div>
     );
   }
