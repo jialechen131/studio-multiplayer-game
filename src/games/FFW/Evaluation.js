@@ -5,3 +5,9 @@ import UserApi from "../../UserApi.js";
 
 
 export default class FFW extends React.Component {
+    render() {
+        return (<div>
+            <h1>Evalution</h1>
+        </div>)
+    }
+}

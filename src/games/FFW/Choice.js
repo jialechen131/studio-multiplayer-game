@@ -12,6 +12,7 @@ export default class FFW extends React.Component {
             <button onClick={() => this.props.setSelection("Fire")}>Fire</button>
             <button onClick={() => this.props.setSelection("Water")}>Water</button>
             <p>You picked {this.props.selection}</p>
+            {this.props.selection && <button onClick={() => this.props.readyClick()}>Ready</button>}
         </div>)
     }
 }

@@ -3,43 +3,73 @@ import GameComponent from "../../GameComponent.js";
 import React from "react";
 import UserApi from "../../UserApi.js";
 import Choice from "./Choice.js"
+import Evaluation from "./Evaluation.js"
 // import Boostrap from 'react-bootstrap/Button';
 
 export default class FFW extends GameComponent {
     constructor(props) {
         super(props);
+        this.getSessionDatabaseRef().child('players/' + this.getMyUserId()).set({
+            selection: null,
+            ready: false
+        });
         this.getSessionDatabaseRef().set({
-            players: {
-                [this.getMyUserId()]: ""
-            },
             phase: "choice"
         });
         this.state = {
             selection: null,
+            ready: false,
             phase: "choice"
         };
     }
     onSessionDataChanged(data) {
-        let keys = Object.keys(data.players);
-        console.log("Data changed!", data);
+        this.setState({
+            phase: `${data.phase}`
+        });
 
-        console.log(keys);
+        if (data.players) {
+            let keys = Object.keys(data.players);
+            console.log("Data changed!", data);
 
-        if (keys[0] && keys[0] !== "" && keys[1] && keys[1] !== "") {
-            this.getSessionDatabaseRef().set({
-                phase: "evaluation"
-            });
+            if (data.players[keys[0]] && data.players[keys[1]]) {
+                if (data.players[keys[0]].ready && data.players[keys[1]].ready) {
+                    this.getSessionDatabaseRef().set({
+                        phase: "evaluation"
+                    });
+                    this.getSessionDatabaseRef().child('players/' + this.getMyUserId()).set({
+                        ready: false
+                    });
+                    this.setState({
+                        phase: "evaluation",
+                        ready: false
+                    });
+                }
+            }
         }
-
         //Evaluation Object.keys.length == 2
     }
 
     setSelection = (selection) => {
         this.setState({ selection: selection });
         let key = this.getMyUserId();
-        this.getSessionDatabaseRef().update({players: {
-            [key]: selection
-        }});
+        this.getSessionDatabaseRef().child('players/' + key).update({
+            selection: selection
+        });
+    }
+
+    readyClick = () => {
+        this.setState({ready: true});
+        this.getSessionDatabaseRef().child('players/' + this.getMyUserId()).update({
+            ready: true
+        });
+    }
+
+    RenderPhase(props) {
+        if (props.state.phase === "choice") {
+            return (<Choice setSelection={props.setSelection} selection={props.state.selection} readyClick={props.readyClick}/>);
+        } else if (props.state.phase === "evaluation") {
+            return (<Evaluation />);
+        }
     }
 
 
@@ -53,7 +83,7 @@ export default class FFW extends GameComponent {
         var isHost = this.getMyUserId() === creatorId;
         return (
             <div className="main">
-                {this.state.phase === "choice" && <Choice setSelection={this.setSelection} selection={this.state.selection} />}
+                <this.RenderPhase state={this.state} setSelection={this.setSelection} selection={this.state.selection} readyClick={this.readyClick} />
             </div>
         );
     }
