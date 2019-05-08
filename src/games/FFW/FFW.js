@@ -19,12 +19,14 @@ export default class FFW extends GameComponent {
         this.state = {
             selection: null,
             ready: false,
-            phase: "choice"
+            phase: "choice",
+            players: {}
         };
     }
     onSessionDataChanged(data) {
         this.setState({
-            phase: `${data.phase}`
+            phase: `${data.phase}`,
+            players: data.players
         });
 
         if (data.players) {
@@ -58,17 +60,25 @@ export default class FFW extends GameComponent {
     }
 
     readyClick = () => {
-        this.setState({ready: true});
+        this.setState({ ready: true });
         this.getSessionDatabaseRef().child('players/' + this.getMyUserId()).update({
             ready: true
         });
     }
 
-    RenderPhase(props) {
+
+    RenderPhase = (props) => {
+
+
         if (props.state.phase === "choice") {
-            return (<Choice setSelection={props.setSelection} selection={props.state.selection} readyClick={props.readyClick}/>);
+            return (<Choice setSelection={props.setSelection} selection={props.state.selection} readyClick={props.readyClick} />);
         } else if (props.state.phase === "evaluation") {
-            return (<Evaluation />);
+            let players;
+            const userID = this.getMyUserId();
+            const opponentID = this.getSessionUserIds().find((id) => (id != userID));
+            console.log(this.state.players);
+            return <div></div>;
+            return (<Evaluation playerID={this.getMyUserId()} opponentID={opponentID} players={this.state.players} />);
         }
     }
 
