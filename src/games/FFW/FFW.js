@@ -24,21 +24,25 @@ export default class FFW extends GameComponent {
         };
     }
     onSessionDataChanged(data) {
+        console.log("players:",data.players)
         this.setState({
-            phase: `${data.phase}`,
-            players: data.players
+            phase: `${data.phase}`
         });
 
         if (data.players) {
+            console.log("Data changed!", data.players);
+            this.setState({
+                players: data.players
+            });
+
             let keys = Object.keys(data.players);
-            console.log("Data changed!", data);
 
             if (data.players[keys[0]] && data.players[keys[1]]) {
                 if (data.players[keys[0]].ready && data.players[keys[1]].ready) {
-                    this.getSessionDatabaseRef().set({
+                    this.getSessionDatabaseRef().update({
                         phase: "evaluation"
                     });
-                    this.getSessionDatabaseRef().child('players/' + this.getMyUserId()).set({
+                    this.getSessionDatabaseRef().child('players/' + this.getMyUserId()).update({
                         ready: false
                     });
                     this.setState({
@@ -52,6 +56,7 @@ export default class FFW extends GameComponent {
     }
 
     setSelection = (selection) => {
+        console.log("set selection: ", selection);
         this.setState({ selection: selection });
         let key = this.getMyUserId();
         this.getSessionDatabaseRef().child('players/' + key).update({
@@ -77,7 +82,6 @@ export default class FFW extends GameComponent {
             const userID = this.getMyUserId();
             const opponentID = this.getSessionUserIds().find((id) => (id != userID));
             console.log(this.state.players);
-            return <div></div>;
             return (<Evaluation playerID={this.getMyUserId()} opponentID={opponentID} players={this.state.players} />);
         }
     }
