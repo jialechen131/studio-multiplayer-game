@@ -28,7 +28,7 @@ export default class Winning extends React.Component {
     render() {
         return (
             <div>
-                <h1>Turn End!</h1>
+                <h1>Game Over</h1>
                 <h2>{gameOverMessages[this.props.choice][this.props.opponent]}</h2>
             </div>
         );
